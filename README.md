@@ -1,5 +1,8 @@
 # Build an AI Startup
 
+![logo](https://cdn.worldvectorlogo.com/logos/elastic-stack.svg|width=200)
+
+
 This repository contains a step-by-step guide to building an AI startup, from setting up cloud infrastructure to deploying a functional AI-powered web application.
 
 Prior to starting tasks, some background for choices of tech stack and methods are in [these slides](https://docs.google.com/presentation/d/15o64i37sIBoT4gUDC6-S_pjh0oApq129NZFnmFcEZ68/edit?usp=sharing)
@@ -13,11 +16,14 @@ Prior to starting tasks, some background for choices of tech stack and methods a
 4. **Nginx Web Server Setup** - Install and configure Nginx as a proper web server for your application.
 5. **Django Setup** - Install and configure Django to create a web application framework.
 6. **Ghibli Style Image Conversion App** - Build a web application that transforms user images into Studio Ghibli art style.
+   - **Chat Application with OpenAI API** - Optionally, add a chat application that integrates with OpenAI's API to provide intelligent responses to user queries.
 7. **User System and Authentication** - Set up user registration, login, and profile management.
 
 Optionals:
 - **Custom Domain Setup** - Purchase a domain name from Namecheap and connect it to your application.
 - **Stripe Payment System** - Subscription payments for premium features.
+- **Logging with Logfire** - Set up structured loggings
+- **PM2 Process Manager** - Linux process manager setup, for keeping the app running robustly
 
 ## Project Overview
 
@@ -27,6 +33,7 @@ This project guides you through building a complete AI-powered web application f
 - Configure web servers and security
 - Build a Django web application
 - Integrate with AI APIs for image style transfer
+- Integrate with OpenAI API for chat application
 - Implement user authentication and profiles
 - Set up custom domain names
 - Process subscription payments
@@ -41,10 +48,13 @@ Follow each task in sequence. Each task file contains detailed instructions, pre
 - **Cloud Infrastructure**: DigitalOcean
 - **Web Server**: Nginx
 - **Backend Framework**: Django
-- **AI Integration**: DeepAI Style Transfer API
+- **Image Style Transfer**: DeepAI Style Transfer API
+- **Chat Application**: OpenAI API
 - **Deployment**: Gunicorn WSGI server
 - **Domain Registration**: Namecheap
 - **Payment Processing**: Stripe
+- **Logging**: Logfire
+- **Process Manager**: PM2
 
 ## Requirements
 - Basic understanding of command line and SSH
