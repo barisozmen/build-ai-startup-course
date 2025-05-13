@@ -1,11 +1,13 @@
 # Build an AI Startup
 
-![logo](https://cdn.worldvectorlogo.com/logos/elastic-stack.svg|width=200)
+<div align="center">
+<img src="https://cdn.worldvectorlogo.com/logos/elastic-stack.svg" width="200" alt="logo">
+</div>
 
 
 This repository contains a step-by-step guide to building an AI startup, from setting up cloud infrastructure to deploying a functional AI-powered web application.
 
-Prior to starting tasks, some background for choices of tech stack and methods are in [these slides](https://docs.google.com/presentation/d/15o64i37sIBoT4gUDC6-S_pjh0oApq129NZFnmFcEZ68/edit?usp=sharing)
+Prior to starting tasks, you can read [these slides](https://docs.google.com/presentation/d/15o64i37sIBoT4gUDC6-S_pjh0oApq129NZFnmFcEZ68/edit?usp=sharing) that gives a background for choices of tech stack and methods chosen.
 
 
 ## Tasks
