@@ -27,10 +27,9 @@ Optionals:
 - **Logging with Logfire** - Set up structured loggings
 - **PM2 Process Manager** - Linux process manager setup, for keeping the app running robustly
 
-## Project Overview
+## What you will learn?
 
-This project guides you through building a complete AI-powered web application from scratch. You'll learn how to:
-
+How to:
 - Set up and manage cloud infrastructure
 - Configure web servers and security
 - Build a Django web application
@@ -41,15 +40,13 @@ This project guides you through building a complete AI-powered web application f
 - Process subscription payments
 - Deploy a production-ready application
 
-## Getting Started
-
-Follow each task in sequence. Each task file contains detailed instructions, prerequisites, and troubleshooting tips to help you succeed.
 
 ## Technologies Used
 
 - **Cloud Infrastructure**: DigitalOcean
 - **Web Server**: Nginx
 - **Backend Framework**: Django
+- **Frontend**: Django Templates + HTML/CSS/JS
 - **Image Style Transfer**: DeepAI Style Transfer API
 - **Chat Application**: OpenAI API
 - **Deployment**: Gunicorn WSGI server
@@ -58,7 +55,7 @@ Follow each task in sequence. Each task file contains detailed instructions, pre
 - **Logging**: Logfire
 - **Process Manager**: PM2
 
-## Requirements
+## Prerequisites
 - Basic understanding of command line and SSH
 - Familiarity with Python programming
 - A credit/debit card for DigitalOcean account verification, domain purchase, and Stripe setup
