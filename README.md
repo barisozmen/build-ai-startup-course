@@ -1,4 +1,4 @@
-# Build an AI Startup
+# Build an AI Startup From Scratch
 
 <div align="center">
 <img src="https://cdn.worldvectorlogo.com/logos/elastic-stack.svg" width="200" alt="logo">
