@@ -7,7 +7,7 @@
 
 This repository contains a step-by-step guide to building an AI startup, from setting up cloud infrastructure to deploying a functional AI-powered web application.
 
-Prior to starting tasks, you can read [these slides](https://docs.google.com/presentation/d/15o64i37sIBoT4gUDC6-S_pjh0oApq129NZFnmFcEZ68/edit?usp=sharing) that gives a background for choices of tech stack and methods chosen.
+Prior to starting tasks, you can read [these slides](https://docs.google.com/presentation/d/15o64i37sIBoT4gUDC6-S_pjh0oApq129NZFnmFcEZ68/edit?usp=sharing) that gives a background for choices of tech stack and the methods.
 
 
 ## Tasks
@@ -39,7 +39,7 @@ How to:
 - Set up custom domain names
 - Process subscription payments
 - Deploy a production-ready application
-
+- Keep the app running robustly
 
 ## Technologies Used
 
