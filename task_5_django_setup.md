@@ -46,17 +46,37 @@ Install and configure Django to create a web application framework for our AI pr
 ### 4. Create a Django Project
 1. Create a new Django project:
    ```
-   django-admin startproject ai_app .
+   django-admin startproject my_project .
    ```
+
+You should now see files in a `my_project` directory and `manage.py` file.
+
+Content of `my_project` directory:
+- __init__.py
+- asgi.py
+- settings.py
+- urls.py
+- wsgi.py
+
+
 2. Create a basic app within your project:
    ```
-   python manage.py startapp core
+   python manage.py startapp ai_app
    ```
+
+You should now see files in a `ai_app` directory.
+- __init__.py
+- admin.py
+- apps.py
+- models.py
+- tests.py
+- views.py
+
 
 ### 5. Configure Django Settings
 1. Open the settings file:
    ```
-   nano ai_app/settings.py
+   nano my_project/settings.py
    ```
 2. Update the ALLOWED_HOSTS setting to include your Droplet's IP address:
    ```python
@@ -66,7 +86,7 @@ Install and configure Django to create a web application framework for our AI pr
    ```python
    INSTALLED_APPS = [
        # Default apps...
-       'core',
+       'ai_app',
    ]
    ```
 4. Save and close the file
@@ -74,7 +94,7 @@ Install and configure Django to create a web application framework for our AI pr
 ### 6. Create a Simple View
 1. Edit the views.py file in your app:
    ```
-   nano core/views.py
+   nano ai_app/views.py
    ```
 2. Add a simple view:
    ```python
@@ -85,7 +105,7 @@ Install and configure Django to create a web application framework for our AI pr
    ```
 3. Create a urls.py file in your app:
    ```
-   nano core/urls.py
+   nano ai_app/urls.py
    ```
 4. Add URL patterns:
    ```python
@@ -98,7 +118,7 @@ Install and configure Django to create a web application framework for our AI pr
    ```
 5. Update the project's urls.py:
    ```
-   nano ai_app/urls.py
+   nano my_project/urls.py
    ```
 6. Include your app's URLs:
    ```python
@@ -107,7 +127,7 @@ Install and configure Django to create a web application framework for our AI pr
 
    urlpatterns = [
        path('admin/', admin.site.urls),
-       path('', include('core.urls')),
+       path('', include('ai_app.urls')),
    ]
    ```
 
@@ -126,7 +146,7 @@ Install and configure Django to create a web application framework for our AI pr
 ### 8. Configure Gunicorn
 1. Test Gunicorn with your Django project:
    ```
-   gunicorn --bind 0.0.0.0:8000 ai_app.wsgi
+   gunicorn --bind 0.0.0.0:8000 my_project.wsgi
    ```
 2. Create a systemd service file for Gunicorn:
    ```
@@ -142,7 +162,7 @@ Install and configure Django to create a web application framework for our AI pr
    User=root
    Group=www-data
    WorkingDirectory=/root/django_project
-   ExecStart=/root/django_project/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/root/django_project/ai_app.sock ai_app.wsgi:application
+   ExecStart=/root/django_project/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/root/django_project/my_project.sock my_project.wsgi:application
 
    [Install]
    WantedBy=multi-user.target
@@ -172,7 +192,7 @@ Install and configure Django to create a web application framework for our AI pr
 
        location / {
            include proxy_params;
-           proxy_pass http://unix:/root/django_project/ai_app.sock;
+           proxy_pass http://unix:/root/django_project/my_project.sock;
        }
    }
    ```
