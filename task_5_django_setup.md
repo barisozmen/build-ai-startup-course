@@ -103,6 +103,9 @@ You should now see files in a `ai_app` directory.
    def index(request):
        return HttpResponse("<h1>Hello from Django!</h1><p>Your AI application is running with Django.</p>")
    ```
+
+[What is a view in Django?](https://chatgpt.com/share/6826cde3-3a40-8010-b9a8-e84c65c4799e)
+
 3. Create a urls.py file in your app:
    ```
    nano ai_app/urls.py
@@ -116,10 +119,15 @@ You should now see files in a `ai_app` directory.
        path('', views.index, name='index'),
    ]
    ```
+[How URL patterns work in Django?](https://chatgpt.com/c/6826ce0f-a37c-8010-b7a0-d38e700fb37c)
+
+   
 5. Update the project's urls.py:
    ```
    nano my_project/urls.py
    ```
+
+   
 6. Include your app's URLs:
    ```python
    from django.contrib import admin
@@ -132,6 +140,10 @@ You should now see files in a `ai_app` directory.
    ```
 
 ### 7. Run Django Development Server
+
+[What is purpose of manage.py in Django?](https://chatgpt.com/share/6826ce96-ab28-8010-a611-a5e081b765a7)
+
+
 1. Run migrations to set up the database:
    ```
    python manage.py migrate
