@@ -5,11 +5,9 @@
 </div>
 
 
+This repository contains a step-by-step guide to building an AI startup, from setting up cloud infrastructure to deploying a functional AI-powered web application, to setting up your custom domain and payment system.
 
-
-This repository contains a step-by-step guide to building an AI startup, from setting up cloud infrastructure to deploying a functional AI-powered web application.
-
-Prior to starting tasks, you can read [these slides](https://docs.google.com/presentation/d/15o64i37sIBoT4gUDC6-S_pjh0oApq129NZFnmFcEZ68/edit?usp=sharing) that gives a background for choices of tech stack and the methods.
+Prior to starting tasks, I recommend going through [these slides](https://docs.google.com/presentation/d/15o64i37sIBoT4gUDC6-S_pjh0oApq129NZFnmFcEZ68/edit?usp=sharing) that gives a background for choices of tech stack.
 
 
 ## Tasks
@@ -17,11 +15,12 @@ Prior to starting tasks, you can read [these slides](https://docs.google.com/pre
 1. [Task 1: Create Digital Ocean Droplet](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_1_digital_ocean_account.md) - Set up a cloud server to host your AI application.
 2. [Task 2: SSH into DigitalOcean Droplet](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_2_ssh_into_digital_ocean_droplet.md) - Securely connect to your cloud server via SSH.
 3. [Task 3: Display "Hello World" in a local browser](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_3_hello_world_in_local_browser.md) - Create a basic web server to verify your remote server is working.
-4. [Task 4: Nginx Web Server Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_4_nginx_setup.md) - Install and configure Nginx as a proper web server for your application.
-5. [Task 5: Django Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_5_django_setup.md) - Install and configure Django to create a web application framework.
-6. [Task 6: Ghibli Style Image Conversion App](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_6_ghibli_style_app.md) - Build a web application that transforms user images into Studio Ghibli art style.
-   - [Task 6b: Chat Application with OpenAI API](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_6b_chat_application_with_openai_api.md) - Optionally, add a chat application that integrates with OpenAI's API to provide intelligent responses to user queries.
-7. [Task 7: User System and Authentication](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_7_user_system_and_authentication.md) - Set up user registration, login, and profile management.
+4. [Task 4: Nginx Web Server Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_4_nginx_setup.md) - Install and configure Nginx.
+5. [Task 5: Remote Development Environment Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_5_remote_dev_environment_setup.md) - develop code in remote from your laptop.
+6. [Task 6: Django Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_5_django_setup.md) - Install and configure Django to create a web application framework.
+7. [Task 7: Ghibli Style Image Conversion App](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_7_ghibli_style_app.md) - Build a web application that transforms user images into Studio Ghibli art style.
+   - [Task 7b: Chat Application with OpenAI API](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_7b_chat_app.md) - Optionally, add a chat application that integrates with OpenAI's API to provide intelligent responses to user queries.
+8. [Task 8: User System and Authentication](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_8_user_system_and_authentication.md) - Set up user registration, login, and profile management.
 
 Optionals:
 - [Custom Domain Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/optional_task_custom_domain_setup.md) - Purchase a domain name from Namecheap and connect it to your application.

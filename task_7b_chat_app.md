@@ -1,4 +1,4 @@
-# Task 6B: Chat Application with OpenAI API
+# Task 7B: Chat Application with OpenAI API
 
 ## Objective
 Create a chat application that integrates with OpenAI's API to provide intelligent responses to user queries. This feature will complement our existing Ghibli Style Image Conversion app by adding conversational AI capabilities.

@@ -1,4 +1,4 @@
-# Task 7: User System and Authentication
+# Task 8: User System and Authentication
 
 ## Objective
 Set up a user database in Django and implement an authentication system with registration, login, and user profile functionality for our AI application.

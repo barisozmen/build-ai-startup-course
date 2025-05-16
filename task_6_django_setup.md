@@ -1,4 +1,4 @@
-# Task 5: Django Setup
+# Task 6: Django Setup
 
 ## Objective
 Install and configure Django to create a web application framework for our AI project.
@@ -7,6 +7,18 @@ Install and configure Django to create a web application framework for our AI pr
 - SSH access to your DigitalOcean Droplet
 - Nginx web server installed and configured
 - Basic understanding of Python and web frameworks
+
+
+## Before we start
+In this step, we will create a Django project in our DigitalOcean Droplet, and then do development there.
+
+For doing remote development, there are multiple options:
+- [Recommended] Use a remote development tool like [Cursor](https://www.cursor.com/) or [VS Code Remote Development](https://code.visualstudio.com/docs/remote/remote-overview)
+- Develop locally and push code to Github, and then pull to the Droplet
+- Develop locally and push code to remote by rsync command
+  - `rsync -avz -e "ssh -i ~/.ssh/id_rsa" . root@your_droplet_ip:~/<project address>`
+  - [How does `rsync` work?](https://chatgpt.com/share/6826fd39-7220-8010-bf5c-35549c46490d)
+
 
 ## Steps
 

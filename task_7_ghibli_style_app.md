@@ -1,4 +1,4 @@
-# Task 6: Ghibli Style Image Conversion App
+# Task 7: Ghibli Style Image Conversion App
 
 ## Objective
 Create a Django web application that allows users to upload images and convert them to Studio Ghibli art style using an AI API.
