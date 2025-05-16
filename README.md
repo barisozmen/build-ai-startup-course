@@ -14,20 +14,20 @@ Prior to starting tasks, you can read [these slides](https://docs.google.com/pre
 
 ## Tasks
 
-1. **[Task 1: Create Digital Ocean Droplet](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_1_create_digital_ocean_droplet.md)** - Set up a cloud server to host your AI application.
-2. **[Task 2: SSH into DigitalOcean Droplet](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_2_ssh_into_digital_ocean_droplet.md)** - Securely connect to your cloud server via SSH.
-3. **[Task 3: Display "Hello World" in a local browser](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_3_display_hello_world.md)** - Create a basic web server to verify your remote server is working.
-4. **[Task 4: Nginx Web Server Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_4_nginx_web_server_setup.md)** - Install and configure Nginx as a proper web server for your application.
-5. **[Task 5: Django Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_5_django_setup.md)** - Install and configure Django to create a web application framework.
-6. **[Task 6: Ghibli Style Image Conversion App](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_6_ghibli_style_image_conversion_app.md)** - Build a web application that transforms user images into Studio Ghibli art style.
-   - **[Task 6b: Chat Application with OpenAI API](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_6b_chat_application_with_openai_api.md)** - Optionally, add a chat application that integrates with OpenAI's API to provide intelligent responses to user queries.
-7. **[Task 7: User System and Authentication](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_7_user_system_and_authentication.md)** - Set up user registration, login, and profile management.
+1. [Task 1: Create Digital Ocean Droplet](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_1_digital_ocean_account.md) - Set up a cloud server to host your AI application.
+2. [Task 2: SSH into DigitalOcean Droplet](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_2_ssh_into_digital_ocean_droplet.md) - Securely connect to your cloud server via SSH.
+3. [Task 3: Display "Hello World" in a local browser](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_3_hello_world_in_local_browser.md) - Create a basic web server to verify your remote server is working.
+4. [Task 4: Nginx Web Server Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_4_nginx_setup.md) - Install and configure Nginx as a proper web server for your application.
+5. [Task 5: Django Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_5_django_setup.md) - Install and configure Django to create a web application framework.
+6. [Task 6: Ghibli Style Image Conversion App](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_6_ghibli_style_image_conversion_app.md) - Build a web application that transforms user images into Studio Ghibli art style.
+   - [Task 6b: Chat Application with OpenAI API](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_6b_chat_application_with_openai_api.md) - Optionally, add a chat application that integrates with OpenAI's API to provide intelligent responses to user queries.
+7. [Task 7: User System and Authentication](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_7_user_system_and_authentication.md) - Set up user registration, login, and profile management.
 
 Optionals:
-- **[Custom Domain Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/optional_task_custom_domain_setup.md)** - Purchase a domain name from Namecheap and connect it to your application.
-- **[Stripe Payment System](https://github.com/barisozmen/build-ai-startup-course/blob/main/optional_task_stripe_payment_system.md)** - Subscription payments for premium features.
-- **[Logging with Logfire](https://github.com/barisozmen/build-ai-startup-course/blob/main/optional_task_logging_with_logfire.md)** - Set up structured loggings
-- **[PM2 Process Manager](https://github.com/barisozmen/build-ai-startup-course/blob/main/optional_task_pm2_process_manager.md)** - Linux process manager setup, for keeping the app running robustly
+- [Custom Domain Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/optional_task_custom_domain_setup.md) - Purchase a domain name from Namecheap and connect it to your application.
+- [Stripe Payment System](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_stripe_payment_system.md) - Subscription payments for premium features.
+- [Logging with Logfire](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_logging_with_logfire.md) - Set up structured loggings
+- [PM2 Process Manager](https://github.com/barisozmen/build-ai-startup-course/blob/main/optional_task_pm2_process_manager.md) - Linux process manager setup, for keeping the app running robustly
 
 Other:
 - [Terminal Commands](https://github.com/barisozmen/build-ai-startup-course/blob/main/terminal_commands.md)
