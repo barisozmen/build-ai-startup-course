@@ -1,8 +1,11 @@
-# Build an AI Startup From Scratch
+# Build Your AI Startup From Scratch 🚀 
 
 <div align="center">
 <img src="https://cdn.worldvectorlogo.com/logos/elastic-stack.svg" width="200" alt="logo">
+<img src="assets/ai-startup-image.png" width="600" alt="frontpic">
 </div>
+
+
 
 
 This repository contains a step-by-step guide to building an AI startup, from setting up cloud infrastructure to deploying a functional AI-powered web application.
