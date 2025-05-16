@@ -1,7 +1,7 @@
-# Milestone 5: Setting Up Nginx Web Server
+# Task 4: Setting Up Nginx Web Server
 
 ## Objective
-Install and configure Nginx as a proper web server for our AI application.
+Install and configure Nginx as a proper web server and load balancerfor our AI application.
 
 #### What is Nginx?
 nginx ("engine x") is an HTTP web server, reverse proxy, content cache, load balancer, TCP/UDP proxy server, and mail proxy server (ref: https://nginx.org/).
@@ -14,7 +14,6 @@ A reverse proxy is a server that sits between the client and the web server. It 
 
 #### What is a load balancer?
 A load balancer is a server that distributes incoming application traffic across a group of backend servers, either for the purpose of improving performance, or to allow for greater scalability that can support larger traffic.
-
 
 
 ## Prerequisites
@@ -65,9 +64,10 @@ A load balancer is a server that distributes incoming application traffic across
    ```
    sudo mkdir -p /var/www/ai-app
    ```
+   [Why we use /var/www/ directory here?](https://chatgpt.com/share/6826ed8e-8ce8-8010-8d0e-48ee8145a113)
 2. Create a basic HTML file:
    ```
-   echo "<html><body><h1>AI App with Nginx</h1><p>Nginx is successfully serving this page!</p></body></html>" > /var/www/ai-app/index.html
+   echo "<html><body><h1>AI App with Nginx</h1><p>Nginx is successfully serving this page</p></body></html>" > /var/www/ai-app/index.html
    ```
 
 ### 6. Configure Nginx Server Block
@@ -75,6 +75,9 @@ A load balancer is a server that distributes incoming application traffic across
    ```
    sudo nano /etc/nginx/sites-available/ai-app
    ```
+   [Why do we use `/etc/nginx/sites-available/` address for nginx? and how does nginx work under the hood when reading from this address?](https://chatgpt.com/share/6826ee9e-776c-8010-bcb2-fb99d2c59720)
+
+
 2. Add the following configuration:
    ```
    server {

@@ -30,7 +30,7 @@ Optionals:
 - [PM2 Process Manager](https://github.com/barisozmen/build-ai-startup-course/blob/main/optional_task_pm2_process_manager.md) - Linux process manager setup, for keeping the app running robustly
 
 Other:
-- [Terminal Commands](https://github.com/barisozmen/build-ai-startup-course/blob/main/terminal_commands.md)
+- [Terminal Commands](https://github.com/barisozmen/build-ai-startup-course/blob/main/terminal_commands.md) used throught the course
 
 
 ## Technologies Used

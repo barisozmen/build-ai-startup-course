@@ -11,6 +11,9 @@ Securely connect to your DigitalOcean Droplet using SSH.
   - PuTTY (alternative for Windows)
 - SSH key (if you selected SSH authentication)
 
+[What is SSH?](https://chatgpt.com/share/6826ede6-f3ec-8010-8059-5b3e83ee12da)
+
+
 ## Steps
 
 ### 1. Connect your droplet via SSH

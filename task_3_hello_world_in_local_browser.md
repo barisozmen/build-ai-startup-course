@@ -25,7 +25,8 @@ Set up a basic web server to display a "Hello World" message accessible via web 
 2. Create a simple HTML file:
    ```
    mkdir -p ~/hello-world
-   echo "<html><body><h1>Hello, World!</h1><p>My first AI app server is working!</p></body></html>" > ~/hello-world/index.html
+   
+   echo "<html><body><h1>Hello, World</h1><p>My app server is working</p></body></html>" > ~/hello-world/index.html
    ```
 3. Start a basic Python web server:
    ```

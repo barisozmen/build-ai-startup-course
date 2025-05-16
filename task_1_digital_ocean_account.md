@@ -24,7 +24,7 @@ Create and configure a DigitalOcean droplet that will host our AI application.
    - $5/mo or $10/mo plan should be sufficient
 5. Choose a datacenter region closest to your target users
 6. Authentication:
-   - Choose SSH keys (recommended) or Password
+   - Choose SSH keys or Password
    - If using SSH keys, follow the instructions to add your public key
 7. Add a hostname (e.g., "ai-app-droplet")
 8. Click "Create Droplet"
