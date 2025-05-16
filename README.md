@@ -1,8 +1,7 @@
 # Build Your AI Startup From Scratch 🚀 
 
 <div align="center">
-<img src="https://cdn.worldvectorlogo.com/logos/elastic-stack.svg" width="200" alt="logo">
-<img src="assets/ai-startup-image.png" width="600" alt="frontpic">
+<img src="assets/lego-builder.png" width="400" alt="frontpic">
 </div>
 
 
@@ -46,23 +45,17 @@ How to:
 
 ## Technologies Used
 
-- **Cloud Infrastructure**: [DigitalOcean](https://www.digitalocean.com/) 
-    - [primer](https://chatgpt.com/share/6826cf79-d574-8010-9862-60782fd4f784)
-- **Web Server**: [Nginx](https://nginx.org/) 
-    - [primer](https://chatgpt.com/share/6826d61a-3088-8010-8dcf-18eeb5887cea)
-- **Backend Framework**: [Django](https://www.djangoproject.com/) 
-    - [primer](https://chatgpt.com/share/6826cf56-acec-8010-803c-f7c07cabd481)
+- **Cloud Infrastructure**: [DigitalOcean](https://www.digitalocean.com/) ([primer](https://chatgpt.com/share/6826cf79-d574-8010-9862-60782fd4f784))
+- **Web Server**: [Nginx](https://nginx.org/) ([primer](https://chatgpt.com/share/6826d61a-3088-8010-8dcf-18eeb5887cea))
+- **Backend Framework**: [Django](https://www.djangoproject.com/) ([primer](https://chatgpt.com/share/6826cf56-acec-8010-803c-f7c07cabd481))
 - **Frontend**: Django Templates + HTML/CSS/JS
 - **Image Style Transfer**: [DeepAI Style Transfer API](https://deepai.org/machine-learning-model/fast-style-transfer)
 - **Chat Application**: [OpenAI API](https://openai.com/api/)
 - **Deployment**: [Gunicorn](https://gunicorn.org/) WSGI server
 - **Domain Registration**: [Namecheap](https://www.namecheap.com/)
-- **Payment Processing**: [Stripe](https://stripe.com/) 
-    - [primer](https://chatgpt.com/share/6826d6e7-6708-8010-81f2-794542d2e225)
-- **Logging**: [Logfire](https://logfire.dev/) 
-    - [primer](https://chatgpt.com/share/6826d6c0-d33c-8010-a241-75eadb041494)
-- **Process Manager**: [PM2](https://pm2.keymetrics.io/) 
-    - [primer](https://chatgpt.com/share/6826d677-8774-8010-ad1c-3fe2cf81cde4)
+- **Payment Processing**: [Stripe](https://stripe.com/) ([primer](https://chatgpt.com/share/6826d6e7-6708-8010-81f2-794542d2e225))
+- **Logging**: [Logfire](https://logfire.dev/) ([primer](https://chatgpt.com/share/6826d6c0-d33c-8010-a241-75eadb041494))
+- **Process Manager**: [PM2](https://pm2.keymetrics.io/) ([primer](https://chatgpt.com/share/6826d677-8774-8010-ad1c-3fe2cf81cde4))
 
 ## Prerequisites
 - Basic understanding of command line and SSH
