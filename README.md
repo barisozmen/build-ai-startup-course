@@ -19,7 +19,7 @@ Prior to starting tasks, you can read [these slides](https://docs.google.com/pre
 3. [Task 3: Display "Hello World" in a local browser](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_3_hello_world_in_local_browser.md) - Create a basic web server to verify your remote server is working.
 4. [Task 4: Nginx Web Server Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_4_nginx_setup.md) - Install and configure Nginx as a proper web server for your application.
 5. [Task 5: Django Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_5_django_setup.md) - Install and configure Django to create a web application framework.
-6. [Task 6: Ghibli Style Image Conversion App](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_6_ghibli_style_image_conversion_app.md) - Build a web application that transforms user images into Studio Ghibli art style.
+6. [Task 6: Ghibli Style Image Conversion App](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_6_ghibli_style_app.md) - Build a web application that transforms user images into Studio Ghibli art style.
    - [Task 6b: Chat Application with OpenAI API](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_6b_chat_application_with_openai_api.md) - Optionally, add a chat application that integrates with OpenAI's API to provide intelligent responses to user queries.
 7. [Task 7: User System and Authentication](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_7_user_system_and_authentication.md) - Set up user registration, login, and profile management.
 
