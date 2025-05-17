@@ -1,0 +1,41 @@
+{% extends 'image_generator/base.html' %}
+
+{% block content %}
+<div class="profile">
+    <h2>{{ user.username }}'s Profile</h2>
+    
+    <div class="profile-info">
+        {% if user.profile.profile_picture %}
+            <img src="{{ user.profile.profile_picture.url }}" alt="Profile picture" class="profile-picture">
+        {% endif %}
+        
+        <div class="profile-details">
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio provided." }}</p>
+            <p><strong>Member since:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+            <p><strong>Images created:</strong> {{ user.images.count }}</p>
+        </div>
+    </div>
+    
+    <div class="profile-actions">
+        <a href="{% url 'edit_profile' %}" class="button">Edit Profile</a>
+    </div>
+    
+    <h3>Your Images</h3>
+    {% if user.images.exists %}
+        <div class="gallery">
+            {% for image in user.images.all %}
+            <div class="image-card">
+                <img src="{{ image.image.url }}" alt="Generated image">
+                <div class="prompt">"{{ image.prompt }}"</div>
+                <div class="timestamp">{{ image.created_at|date:"F j, Y, g:i a" }}</div>
+                <div class="visibility">{% if image.is_public %}Public{% else %}Private{% endif %}</div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't created any images yet. <a href="{% url 'home' %}">Create your first image!</a></p>
+    {% endif %}
+</div>
+{% endblock %}

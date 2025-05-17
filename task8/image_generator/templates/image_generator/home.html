@@ -1,0 +1,23 @@
+{% extends 'image_generator/base.html' %}
+   
+{% block content %}
+<h2>Generate a New Image</h2>
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <label for="{{ form.prompt.id_for_label }}">Describe the image you want:</label>
+        {{ form.prompt }}
+    </div>
+    <button type="submit">Generate Image</button>
+</form>
+
+<div style="margin-top: 30px;">
+    <h3>Tips for better results:</h3>
+    <ul>
+        <li>Be specific about what you want to see</li>
+        <li>Include details about style, lighting, and composition</li>
+        <li>Try phrases like "digital art", "photorealistic", or "oil painting"</li>
+        <li>The more detailed your prompt, the better the results</li>
+    </ul>
+</div>
+{% endblock %}
