@@ -1,10 +1,11 @@
-# Task: Optional Stripe Payment System
+# Task: Optional Stripe Payment System for AI Image Generator
 
 ## Objective
-Add a subscription payment system to your AI application using Stripe, allowing users to pay for premium features.
+Add a subscription payment system to your AI Image Generator application using Stripe, allowing users to pay for premium features.
 
 ## Prerequisites
-- Completed Django setup (Task 5)
+- Completed Django setup with AI Image Generator app (Task 7)
+- User authentication system (Task 8)
 - Basic understanding of payment processing
 - Credit/debit card for Stripe account verification
 
@@ -35,7 +36,7 @@ Add a subscription payment system to your AI application using Stripe, allowing 
 
 1. Open your Django settings file:
    ```
-   nano ai_app/settings.py
+   nano my_project/settings.py
    ```
 2. Add Stripe configuration at the bottom:
    ```python
@@ -49,9 +50,9 @@ Add a subscription payment system to your AI application using Stripe, allowing 
 
 1. In the Stripe Dashboard, go to Products > Create Product
 2. Set up a subscription product:
-   - Name: "Ghibli Premium"
-   - Description: "Unlimited image conversions and priority processing"
-   - Pricing: Create a recurring price (e.g., $5.99/month)
+   - Name: "AI Image Generator Premium"
+   - Description: "Advanced image generation features and priority processing"
+   - Pricing: Create a recurring price (e.g., $9.99/month)
 3. After creating the product, note the Price ID (starts with "price_")
 4. Update your Django settings with this Price ID
 
@@ -65,8 +66,7 @@ Add a subscription payment system to your AI application using Stripe, allowing 
    ```python
    INSTALLED_APPS = [
        # Default apps...
-       'core',
-       'ghibli_converter',
+       'image_generator',
        'subscriptions',
    ]
    ```
@@ -112,6 +112,14 @@ Add a subscription payment system to your AI application using Stripe, allowing 
 
    @login_required
    def subscription_page(request):
+       # Check if user already has an active subscription
+       try:
+           subscription = Subscription.objects.get(user=request.user)
+           if subscription.status == 'active':
+               return render(request, 'subscriptions/already_subscribed.html')
+       except Subscription.DoesNotExist:
+           pass
+            
        return render(request, 'subscriptions/subscription.html', {
            'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
            'price_id': settings.STRIPE_PRICE_ID,
@@ -229,6 +237,18 @@ Add a subscription payment system to your AI application using Stripe, allowing 
            subscription.save()
        except Subscription.DoesNotExist:
            pass
+
+   @login_required
+   def subscription_management(request):
+       try:
+           subscription = Subscription.objects.get(user=request.user)
+           portal_session = stripe.billing_portal.Session.create(
+               customer=subscription.stripe_customer_id,
+               return_url=request.build_absolute_uri(reverse('profile')),
+           )
+           return redirect(portal_session.url)
+       except Subscription.DoesNotExist:
+           return redirect('subscribe')
    ```
 
 ### 8. Create URL Patterns for Subscription
@@ -244,6 +264,7 @@ Add a subscription payment system to your AI application using Stripe, allowing 
        path('success/', views.subscription_success, name='subscription_success'),
        path('cancel/', views.subscription_cancel, name='subscription_cancel'),
        path('webhook/', views.webhook, name='stripe_webhook'),
+       path('manage/', views.subscription_management, name='manage_subscription'),
    ]
    ```
 
@@ -256,7 +277,7 @@ Add a subscription payment system to your AI application using Stripe, allowing 
 
    urlpatterns = [
        path('admin/', admin.site.urls),
-       path('', include('ghibli_converter.urls')),
+       path('', include('image_generator.urls')),
        path('subscription/', include('subscriptions.urls')),
    ]
 
@@ -274,19 +295,20 @@ Add a subscription payment system to your AI application using Stripe, allowing 
 
 2. Create subscriptions/templates/subscriptions/subscription.html:
    ```html
-   {% extends 'ghibli_converter/base.html' %}
+   {% extends 'image_generator/base.html' %}
 
    {% block content %}
    <h2>Upgrade to Premium</h2>
    <div class="subscription-container">
        <div class="subscription-card">
-           <h3>Ghibli Premium</h3>
-           <p class="price">$5.99/month</p>
+           <h3>AI Image Generator Premium</h3>
+           <p class="price">$9.99/month</p>
            <ul>
-               <li>Unlimited image conversions</li>
+               <li>Generate higher resolution images (1024x1024)</li>
+               <li>Access to DALL-E 3 for better quality</li>
                <li>Priority processing</li>
-               <li>Access to exclusive styles</li>
-               <li>Higher resolution output</li>
+               <li>Generate up to 100 images per day</li>
+               <li>Save private image history</li>
            </ul>
            <button id="checkout-button">Subscribe Now</button>
        </div>
@@ -332,21 +354,28 @@ Add a subscription payment system to your AI application using Stripe, allowing 
 
 3. Create subscriptions/templates/subscriptions/success.html:
    ```html
-   {% extends 'ghibli_converter/base.html' %}
+   {% extends 'image_generator/base.html' %}
 
    {% block content %}
    <div class="success-container">
        <h2>Subscription Successful!</h2>
-       <p>Thank you for subscribing to Ghibli Premium!</p>
-       <p>You now have access to all premium features.</p>
-       <a href="{% url 'home' %}" class="button">Return to Home</a>
+       <p>Thank you for subscribing to AI Image Generator Premium!</p>
+       <p>You now have access to all premium features:</p>
+       <ul>
+           <li>Higher resolution images (1024x1024)</li>
+           <li>Access to DALL-E 3 for better quality</li>
+           <li>Priority processing</li>
+           <li>Generate up to 100 images per day</li>
+           <li>Save private image history</li>
+       </ul>
+       <a href="{% url 'home' %}" class="button">Start Generating Images</a>
    </div>
    {% endblock %}
    ```
 
 4. Create subscriptions/templates/subscriptions/cancel.html:
    ```html
-   {% extends 'ghibli_converter/base.html' %}
+   {% extends 'image_generator/base.html' %}
 
    {% block content %}
    <div class="cancel-container">
@@ -354,6 +383,28 @@ Add a subscription payment system to your AI application using Stripe, allowing 
        <p>You have cancelled the subscription process.</p>
        <p>You can subscribe anytime to access premium features.</p>
        <a href="{% url 'home' %}" class="button">Return to Home</a>
+   </div>
+   {% endblock %}
+   ```
+
+5. Create subscriptions/templates/subscriptions/already_subscribed.html:
+   ```html
+   {% extends 'image_generator/base.html' %}
+
+   {% block content %}
+   <div class="success-container">
+       <h2>You're Already a Premium Member!</h2>
+       <p>You already have an active subscription to AI Image Generator Premium.</p>
+       <p>You're enjoying all premium features:</p>
+       <ul>
+           <li>Higher resolution images (1024x1024)</li>
+           <li>Access to DALL-E 3 for better quality</li>
+           <li>Priority processing</li>
+           <li>Generate up to 100 images per day</li>
+           <li>Save private image history</li>
+       </ul>
+       <a href="{% url 'manage_subscription' %}" class="button">Manage Subscription</a>
+       <a href="{% url 'home' %}" class="button secondary">Continue Generating Images</a>
    </div>
    {% endblock %}
    ```
@@ -418,6 +469,12 @@ Add a subscription payment system to your AI application using Stripe, allowing 
        max-width: 500px;
    }
    
+   .success-container ul {
+       text-align: left;
+       display: inline-block;
+       margin: 20px auto;
+   }
+   
    .button {
        display: inline-block;
        background-color: #0066cc;
@@ -428,6 +485,11 @@ Add a subscription payment system to your AI application using Stripe, allowing 
        margin-top: 20px;
    }
    
+   .button.secondary {
+       background-color: #666;
+       margin-left: 10px;
+   }
+   
    .button:hover {
        background-color: #0055aa;
    }
@@ -435,16 +497,191 @@ Add a subscription payment system to your AI application using Stripe, allowing 
 
 ### 11. Add Subscription Link to Navigation
 
-1. Update the navigation in your base template (ghibli_converter/templates/ghibli_converter/base.html):
+1. Update the navigation in image_generator/templates/image_generator/base.html:
    ```html
    <div class="nav">
-       <a href="{% url 'home' %}">Home</a>
+       <a href="{% url 'home' %}">Generate</a>
        <a href="{% url 'gallery' %}">Gallery</a>
-       <a href="{% url 'subscribe' %}">Upgrade to Premium</a>
+       {% if user.is_authenticated %}
+           <a href="{% url 'profile' %}">My Profile</a>
+           <a href="{% url 'subscribe' %}">Premium</a>
+       {% endif %}
    </div>
    ```
 
-### 12. Set Up Stripe Webhook
+### 12. Update User Profile to Show Subscription Status
+
+1. Modify image_generator/templates/image_generator/profile.html to include subscription status:
+   ```html
+   <div class="profile-info">
+       {% if user.profile.profile_picture %}
+           <img src="{{ user.profile.profile_picture.url }}" alt="Profile picture" class="profile-picture">
+       {% endif %}
+       
+       <div class="profile-details">
+           <p><strong>Username:</strong> {{ user.username }}</p>
+           <p><strong>Email:</strong> {{ user.email }}</p>
+           <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio provided." }}</p>
+           <p><strong>Member since:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+           <p><strong>Images created:</strong> {{ user.images.count }}</p>
+           
+           <!-- Add subscription status -->
+           {% if subscription and subscription.status == 'active' %}
+               <p class="subscription-status premium">
+                   <span class="badge">Premium</span> 
+                   You are a premium member
+                   <a href="{% url 'manage_subscription' %}" class="small-button">Manage</a>
+               </p>
+           {% else %}
+               <p class="subscription-status">
+                   <span class="badge basic">Basic</span> 
+                   Free account
+                   <a href="{% url 'subscribe' %}" class="small-button">Upgrade</a>
+               </p>
+           {% endif %}
+       </div>
+   </div>
+   ```
+
+2. Add CSS styles for subscription status:
+   ```css
+   .subscription-status {
+       margin-top: 10px;
+       padding: 8px 12px;
+       background-color: #f8f9fa;
+       border-radius: 4px;
+   }
+   
+   .subscription-status.premium {
+       background-color: #fff4de;
+   }
+   
+   .badge {
+       display: inline-block;
+       padding: 3px 8px;
+       border-radius: 4px;
+       font-size: 0.8em;
+       background-color: #6c757d;
+       color: white;
+       margin-right: 10px;
+   }
+   
+   .badge.premium {
+       background-color: #ffc107;
+       color: #212529;
+   }
+   
+   .badge.basic {
+       background-color: #6c757d;
+   }
+   
+   .small-button {
+       font-size: 0.8em;
+       padding: 2px 8px;
+       background-color: #0066cc;
+       color: white;
+       text-decoration: none;
+       border-radius: 3px;
+       margin-left: 10px;
+   }
+   ```
+
+### 13. Update Profile View to Pass Subscription Status
+
+1. Modify the profile view in image_generator/views.py:
+   ```python
+   @login_required
+   def profile(request):
+       # Get or create user profile
+       profile, created = UserProfile.objects.get_or_create(user=request.user)
+       
+       # Get subscription status
+       subscription = None
+       try:
+           from subscriptions.models import Subscription
+           subscription = Subscription.objects.get(user=request.user)
+       except:
+           pass
+           
+       return render(request, 'image_generator/profile.html', {
+           'subscription': subscription
+       })
+   ```
+
+### 14. Modify Image Generation to Use Premium Features for Subscribers
+
+1. Update the generate_image function in image_generator/views.py:
+   ```python
+   def generate_image(prompt, user, is_public=True):
+       # Check if user has premium subscription
+       is_premium = False
+       try:
+           from subscriptions.models import Subscription
+           subscription = Subscription.objects.get(user=user)
+           is_premium = subscription.status == 'active'
+       except:
+           pass
+           
+       # Call OpenAI API to generate an image
+       try:
+           # Use better model and higher resolution for premium users
+           model = "dall-e-3" if is_premium else "dall-e-2"
+           size = "1024x1024" if is_premium else "512x512"
+           
+           response = client.images.generate(
+               model=model,
+               prompt=prompt,
+               n=1,
+               size=size
+           )
+           
+           # Get the image URL from the response format
+           image_url = response.data[0].url
+           
+           # Download the generated image
+           image_response = requests.get(image_url)
+           
+           # Create a new GeneratedImage instance
+           generated_image = GeneratedImage(prompt=prompt, user=user, is_public=is_public)
+           generated_image.image.save(
+               f"generated_{generated_image.id}.png",
+               ContentFile(image_response.content)
+           )
+           generated_image.save()
+           
+           return generated_image
+       except Exception as e:
+           raise Exception(f"API Error: {str(e)}")
+   ```
+
+### 15. Create Utility Function to Check Subscription Status
+
+1. Create a new file subscriptions/utils.py:
+   ```python
+   from .models import Subscription
+
+   def is_premium_user(user):
+       """Check if a user has an active premium subscription"""
+       if not user or not user.is_authenticated:
+           return False
+           
+       try:
+           subscription = Subscription.objects.get(user=user)
+           return subscription.status == 'active'
+       except Subscription.DoesNotExist:
+           return False
+   ```
+
+2. You can then import and use this function across your application:
+   ```python
+   from subscriptions.utils import is_premium_user
+   
+   # Example usage
+   if is_premium_user(request.user):
+       # Enable premium features
+   ```
+
+### 16. Set Up Stripe Webhook
 
 1. In the Stripe Dashboard, go to Developers > Webhooks
 2. Add an endpoint with your server URL:
@@ -461,29 +698,7 @@ Add a subscription payment system to your AI application using Stripe, allowing 
    STRIPE_WEBHOOK_SECRET = 'your_webhook_signing_secret'
    ```
 
-### 13. Add Authentication for Users
-
-Since subscriptions require user accounts, you'll need to add authentication:
-
-1. Create a simple registration and login system:
-   ```
-   python manage.py startapp accounts
-   ```
-
-2. Add basic user authentication views and templates (this is simplified - you would need to expand this for a real application)
-
-3. Update your settings to include the accounts app:
-   ```python
-   INSTALLED_APPS = [
-       # Default apps...
-       'core',
-       'ghibli_converter',
-       'subscriptions',
-       'accounts',
-   ]
-   ```
-
-### 14. Restart Gunicorn to Apply Changes
+### 17. Restart Gunicorn to Apply Changes
 
 1. Restart the Gunicorn service:
    ```
@@ -491,7 +706,7 @@ Since subscriptions require user accounts, you'll need to add authentication:
    ```
 
 ## Expected Outcome
-A functional subscription payment system integrated with your AI application, allowing users to pay for premium features.
+A functional subscription payment system integrated with your AI image generation application, allowing users to pay for premium features such as higher resolution images, better quality models, and increased generation limits.
 
 ## Troubleshooting
 
