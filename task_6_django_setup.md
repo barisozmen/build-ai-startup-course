@@ -113,7 +113,7 @@ You should now see files in a `ai_app` directory.
    from django.http import HttpResponse
 
    def index(request):
-       return HttpResponse("<h1>Hello from Django!</h1><p>Your AI application is running with Django.</p>")
+       return HttpResponse("<h1>Hello from Django!</h1><p>Your AI application is running with Django, and served by nginx on your droplet!</p>")
    ```
 
 [What is a view in Django?](https://chatgpt.com/share/6826cde3-3a40-8010-b9a8-e84c65c4799e)
@@ -167,82 +167,67 @@ You should now see files in a `ai_app` directory.
 3. Open a web browser and navigate to `http://your_droplet_ip:8000`
 4. You should see your "Hello from Django!" message
 
-### 8. Configure Gunicorn
-1. Test Gunicorn with your Django project:
-   ```
-   gunicorn --bind 0.0.0.0:8000 my_project.wsgi
-   ```
-2. Create a systemd service file for Gunicorn:
-   ```
-   sudo nano /etc/systemd/system/gunicorn.service
-   ```
-3. Add the following configuration:
-   ```
-   [Unit]
-   Description=gunicorn daemon
-   After=network.target
 
-   [Service]
-   User=root
-   Group=www-data
-   WorkingDirectory=/root/django_project
-   ExecStart=/root/django_project/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/root/django_project/my_project.sock my_project.wsgi:application
+### 8. Configure Nginx to Proxy to Django
 
-   [Install]
-   WantedBy=multi-user.target
+For development purposes, we'll configure Nginx to proxy requests to Django's built-in development server:
+
+1. Create an Nginx configuration file directly in sites-enabled:
    ```
-4. Start and enable the Gunicorn service:
-   ```
-   sudo systemctl start gunicorn
-   sudo systemctl enable gunicorn
+   sudo nano /etc/nginx/sites-enabled/my_ai_app
    ```
 
-### 9. Configure Nginx to Proxy to Django
-1. Update your Nginx configuration:
-   ```
-   sudo nano /etc/nginx/sites-available/ai-app
-   ```
-2. Modify the configuration to proxy to Gunicorn:
+2. Add the following configuration (replace your_droplet_ip with your actual IP):
    ```
    server {
        listen 80;
        server_name your_droplet_ip;
 
-       location = /favicon.ico { access_log off; log_not_found off; }
+       location = /favicon.ico { 
+           access_log off; 
+           log_not_found off; 
+       }
        
        location /static/ {
            root /root/django_project;
        }
 
        location / {
-           include proxy_params;
-           proxy_pass http://unix:/root/django_project/my_project.sock;
+           proxy_pass http://127.0.0.1:8000;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
        }
    }
    ```
-3. Create the proxy_params file if it doesn't exist:
-   ```
-   sudo nano /etc/nginx/proxy_params
-   ```
-4. Add the following content:
-   ```
-   proxy_set_header Host $http_host;
-   proxy_set_header X-Real-IP $remote_addr;
-   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-   proxy_set_header X-Forwarded-Proto $scheme;
-   ```
-5. Enable the site by creating a symbolic link:
-   ```
-   sudo ln -s /etc/nginx/sites-available/ai-app /etc/nginx/sites-enabled/
-   ```
-6. Test Nginx configuration:
+
+3. Test the Nginx configuration:
    ```
    sudo nginx -t
    ```
-7. Reload Nginx:
+   If you made syntax errors, this command will show you the errors. This is for confirming that the Nginx configuration is correct.
+
+4. If the test is successful, restart Nginx:
    ```
-   sudo systemctl reload nginx
+   sudo systemctl restart nginx
    ```
+
+5. Configure your firewall to allow Nginx:
+   ```
+   sudo ufw allow 'Nginx Full'
+   ```
+
+6. Run the Django development server in the background (you can use a screen or tmux session for this):
+   ```
+   cd ~/django_project
+   source venv/bin/activate
+   python manage.py runserver 0.0.0.0:8000
+   ```
+
+7. Visit your site at http://your_droplet_ip
+
+> **Note**: This setup is for development only. Django's runserver is not suitable for production environments. For production, you should use a proper WSGI server like Gunicorn. We will do this later!
 
 ## Expected Outcome
 A functioning Django web application accessible through your browser at your Droplet's IP address.
@@ -256,7 +241,6 @@ A functioning Django web application accessible through your browser at your Dro
 
 ## Notes
 - Django provides a robust framework for building web applications
-- This setup uses Gunicorn as the WSGI server and Nginx as a reverse proxy
 - For production, you should configure proper security settings and a domain name
 - Remember to replace 'your_droplet_ip' with your actual Droplet IP address in all configurations
 - The Django admin interface is accessible at `http://your_droplet_ip/admin/` after creating a superuser
