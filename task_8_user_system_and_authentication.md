@@ -1,531 +1,601 @@
 # Task 8: User System and Authentication
 
 ## Objective
-Set up a user database in Django and implement an authentication system with registration, login, and user profile functionality for our AI application.
+Extend the AI Image Generation App by adding a user authentication system, user profile pages, and associating generated images with specific users.
 
 ## Prerequisites
-- Completed Task 5: Django Setup
-- SSH access to your DigitalOcean Droplet
-- Basic understanding of Django and web applications
+- Completed Task 7: AI Image Generation App
+- Basic understanding of Django's authentication system
 
 ## Steps
 
-### 1. Configure Django's Built-in Authentication System
+### 1. Update Model to Include User Relationship
 
-1. Connect to your Droplet via SSH
-2. Navigate to your Django project:
-   ```
-   cd ~/django_project
-   source venv/bin/activate
-   ```
+1. Modify the GeneratedImage model in image_generator/models.py to associate images with users:
 
-3. Ensure Django's authentication apps are in INSTALLED_APPS in ai_app/settings.py:
-   ```python
-   INSTALLED_APPS = [
-       'django.contrib.admin',
-       'django.contrib.auth',
-       'django.contrib.contenttypes',
-       'django.contrib.sessions',
-       'django.contrib.messages',
-       'django.contrib.staticfiles',
-       'core',
-       'ghibli_converter',
-   ]
-   ```
-
-4. Make sure the authentication middleware is enabled in ai_app/settings.py:
-   ```python
-   MIDDLEWARE = [
-       'django.middleware.security.SecurityMiddleware',
-       'django.contrib.sessions.middleware.SessionMiddleware',
-       'django.middleware.common.CommonMiddleware',
-       'django.middleware.csrf.CsrfViewMiddleware',
-       'django.contrib.auth.middleware.AuthenticationMiddleware',
-       'django.contrib.messages.middleware.MessageMiddleware',
-       'django.middleware.clickjacking.XFrameOptionsMiddleware',
-   ]
-   ```
-
-### 2. Create a User App
-
-1. Create a new Django app for user management:
-   ```
-   python manage.py startapp users
-   ```
-
-2. Add the new app to INSTALLED_APPS in ai_app/settings.py:
-   ```python
-   INSTALLED_APPS = [
-       # Default apps...
-       'core',
-       'ghibli_converter',
-       'users',
-   ]
-   ```
-
-### 3. Create User Profile Model
-
-1. Edit users/models.py to create a user profile model:
-   ```python
-   from django.db import models
-   from django.contrib.auth.models import User
-   from django.db.models.signals import post_save
-   from django.dispatch import receiver
-
-   class Profile(models.Model):
-       user = models.OneToOneField(User, on_delete=models.CASCADE)
-       bio = models.TextField(max_length=500, blank=True)
-       profile_image = models.ImageField(upload_to='profile_pics', default='profile_pics/default.jpg')
-       date_joined = models.DateTimeField(auto_now_add=True)
-       
-       def __str__(self):
-           return f'{self.user.username} Profile'
-
-   @receiver(post_save, sender=User)
-   def create_user_profile(sender, instance, created, **kwargs):
-       if created:
-           Profile.objects.create(user=instance)
-
-   @receiver(post_save, sender=User)
-   def save_user_profile(sender, instance, **kwargs):
-       instance.profile.save()
-   ```
+```python:image_generator/models.py
+from django.db import models
+from django.contrib.auth.models import User
+   
+class GeneratedImage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='images', null=True)
+    prompt = models.TextField()
+    image = models.ImageField(upload_to='generated_images/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_public = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return f"Image from: {self.prompt[:50]}"
+```
 
 2. Create and apply migrations:
-   ```
-   python manage.py makemigrations
-   python manage.py migrate
-   ```
+```
+python manage.py makemigrations
+python manage.py migrate
+```
 
-3. Create a default profile image:
-   ```
-   mkdir -p ~/django_project/media/profile_pics
-   # Download a default profile image
-   wget -O ~/django_project/media/profile_pics/default.jpg https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y
-   ```
+### 2. Create User Profile Model
 
-### 4. Create Forms for User Registration and Profile
+1. Create a UserProfile model in image_generator/models.py:
 
-1. Create users/forms.py:
-   ```python
-   from django import forms
-   from django.contrib.auth.models import User
-   from django.contrib.auth.forms import UserCreationForm
-   from .models import Profile
+```python:image_generator/models.py
+# Add to the existing models.py file
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    bio = models.TextField(max_length=500, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.user.username}'s profile"
+```
 
-   class UserRegisterForm(UserCreationForm):
-       email = forms.EmailField()
-       
-       class Meta:
-           model = User
-           fields = ['username', 'email', 'password1', 'password2']
+2. Apply migrations:
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 3. Create Forms for User Authentication
+
+1. Update image_generator/forms.py to include user registration and profile forms:
+
+```python:image_generator/forms.py
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from .models import UserProfile
    
-   class UserUpdateForm(forms.ModelForm):
-       email = forms.EmailField()
-       
-       class Meta:
-           model = User
-           fields = ['username', 'email']
-   
-   class ProfileUpdateForm(forms.ModelForm):
-       class Meta:
-           model = Profile
-           fields = ['bio', 'profile_image']
-   ```
+class ImagePromptForm(forms.Form):
+    prompt = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe the image you want to generate...'}),
+        max_length=1000
+    )
+    is_public = forms.BooleanField(required=False, initial=True, label='Make this image public')
 
-### 5. Create Views for Authentication
+class UserRegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+            # Create user profile
+            UserProfile.objects.create(user=user)
+        return user
 
-1. Edit users/views.py:
-   ```python
-   from django.shortcuts import render, redirect
-   from django.contrib import messages
-   from django.contrib.auth.decorators import login_required
-   from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ('bio', 'profile_picture')
+```
 
-   def register(request):
-       if request.method == 'POST':
-           form = UserRegisterForm(request.POST)
-           if form.is_valid():
-               form.save()
-               username = form.cleaned_data.get('username')
-               messages.success(request, f'Account created for {username}! You can now log in.')
-               return redirect('login')
-       else:
-           form = UserRegisterForm()
-       return render(request, 'users/register.html', {'form': form})
+### 4. Create Templates for User Authentication
 
-   @login_required
-   def profile(request):
-       if request.method == 'POST':
-           u_form = UserUpdateForm(request.POST, instance=request.user)
-           p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-           
-           if u_form.is_valid() and p_form.is_valid():
-               u_form.save()
-               p_form.save()
-               messages.success(request, 'Your profile has been updated!')
-               return redirect('profile')
-       else:
-           u_form = UserUpdateForm(instance=request.user)
-           p_form = ProfileUpdateForm(instance=request.user.profile)
-       
-       context = {
-           'u_form': u_form,
-           'p_form': p_form
-       }
-       return render(request, 'users/profile.html', context)
-   ```
+1. Create login template at image_generator/templates/image_generator/login.html:
 
-### 6. Create URL Patterns for User Authentication
+```html:image_generator/templates/image_generator/login.html
+{% extends 'image_generator/base.html' %}
 
-1. Create users/urls.py:
-   ```python
-   from django.urls import path
-   from . import views
-   from django.contrib.auth import views as auth_views
+{% block content %}
+<h2>Login</h2>
+<form method="post" class="auth-form">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required>
+    </div>
+    <button type="submit">Login</button>
+</form>
+<div class="auth-links">
+    <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+</div>
+{% endblock %}
+```
 
-   urlpatterns = [
-       path('register/', views.register, name='register'),
-       path('profile/', views.profile, name='profile'),
-       path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
-       path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
-       path('password-reset/', 
-            auth_views.PasswordResetView.as_view(template_name='users/password_reset.html'), 
-            name='password_reset'),
-       path('password-reset/done/', 
-            auth_views.PasswordResetDoneView.as_view(template_name='users/password_reset_done.html'), 
-            name='password_reset_done'),
-       path('password-reset-confirm/<uidb64>/<token>/', 
-            auth_views.PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html'), 
-            name='password_reset_confirm'),
-       path('password-reset-complete/', 
-            auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), 
-            name='password_reset_complete'),
-   ]
-   ```
+2. Create registration template at image_generator/templates/image_generator/register.html:
 
-2. Update the project's urls.py:
-   ```python
-   from django.contrib import admin
-   from django.urls import path, include
-   from django.conf import settings
-   from django.conf.urls.static import static
+```html:image_generator/templates/image_generator/register.html
+{% extends 'image_generator/base.html' %}
 
-   urlpatterns = [
-       path('admin/', admin.site.urls),
-       path('', include('ghibli_converter.urls')),
-       path('users/', include('users.urls')),
-   ]
+{% block content %}
+<h2>Register</h2>
+<form method="post" class="auth-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>
+<div class="auth-links">
+    <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+</div>
+{% endblock %}
+```
 
-   if settings.DEBUG:
-       urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-   ```
+3. Create profile template at image_generator/templates/image_generator/profile.html:
 
-### 7. Configure Login/Logout Redirects
+```html:image_generator/templates/image_generator/profile.html
+{% extends 'image_generator/base.html' %}
 
-1. Add these settings to ai_app/settings.py:
-   ```python
-   # Authentication settings
-   LOGIN_REDIRECT_URL = 'home'
-   LOGIN_URL = 'login'
-   ```
+{% block content %}
+<div class="profile">
+    <h2>{{ user.username }}'s Profile</h2>
+    
+    <div class="profile-info">
+        {% if user.profile.profile_picture %}
+            <img src="{{ user.profile.profile_picture.url }}" alt="Profile picture" class="profile-picture">
+        {% endif %}
+        
+        <div class="profile-details">
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio provided." }}</p>
+            <p><strong>Member since:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+            <p><strong>Images created:</strong> {{ user.images.count }}</p>
+        </div>
+    </div>
+    
+    <div class="profile-actions">
+        <a href="{% url 'edit_profile' %}" class="button">Edit Profile</a>
+    </div>
+    
+    <h3>Your Images</h3>
+    {% if user.images.exists %}
+        <div class="gallery">
+            {% for image in user.images.all %}
+            <div class="image-card">
+                <img src="{{ image.image.url }}" alt="Generated image">
+                <div class="prompt">"{{ image.prompt }}"</div>
+                <div class="timestamp">{{ image.created_at|date:"F j, Y, g:i a" }}</div>
+                <div class="visibility">{% if image.is_public %}Public{% else %}Private{% endif %}</div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't created any images yet. <a href="{% url 'home' %}">Create your first image!</a></p>
+    {% endif %}
+</div>
+{% endblock %}
+```
 
-### 8. Create Templates for User Authentication
+4. Create edit profile template at image_generator/templates/image_generator/edit_profile.html:
 
-1. Create template directories:
-   ```
-   mkdir -p users/templates/users
-   ```
+```html:image_generator/templates/image_generator/edit_profile.html
+{% extends 'image_generator/base.html' %}
 
-2. Create users/templates/users/register.html:
-   ```html
-   {% extends "ghibli_converter/base.html" %}
-   {% block content %}
-       <div class="form-container">
-           <h2>Register</h2>
-           <form method="POST">
-               {% csrf_token %}
-               <fieldset>
-                   <legend>Join Today</legend>
-                   {{ form.as_p }}
-               </fieldset>
-               <div>
-                   <button type="submit">Sign Up</button>
-               </div>
-           </form>
-           <div class="border-top pt-3">
-               <small>
-                   Already Have An Account? <a href="{% url 'login' %}">Sign In</a>
-               </small>
-           </div>
-       </div>
-   {% endblock content %}
-   ```
+{% block content %}
+<h2>Edit Profile</h2>
+<form method="post" enctype="multipart/form-data" class="profile-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+</form>
+<div class="profile-actions">
+    <a href="{% url 'profile' %}" class="button secondary">Back to Profile</a>
+</div>
+{% endblock %}
+```
 
-3. Create users/templates/users/login.html:
-   ```html
-   {% extends "ghibli_converter/base.html" %}
-   {% block content %}
-       <div class="form-container">
-           <h2>Login</h2>
-           <form method="POST">
-               {% csrf_token %}
-               <fieldset>
-                   <legend>Log In</legend>
-                   {{ form.as_p }}
-               </fieldset>
-               <div>
-                   <button type="submit">Login</button>
-               </div>
-               <div class="border-top pt-3">
-                   <small>
-                       <a href="{% url 'password_reset' %}">Forgot Password?</a>
-                   </small>
-               </div>
-           </form>
-           <div class="border-top pt-3">
-               <small>
-                   Need An Account? <a href="{% url 'register' %}">Sign Up Now</a>
-               </small>
-           </div>
-       </div>
-   {% endblock content %}
-   ```
+### 5. Update the Base Template to Include Authentication Links
 
-4. Create users/templates/users/logout.html:
-   ```html
-   {% extends "ghibli_converter/base.html" %}
-   {% block content %}
-       <div class="form-container">
-           <h2>You have been logged out</h2>
-           <div>
-               <small>
-                   <a href="{% url 'login' %}">Log In Again</a>
-               </small>
-           </div>
-       </div>
-   {% endblock content %}
-   ```
+1. Update image_generator/templates/image_generator/base.html:
 
-5. Create users/templates/users/profile.html:
-   ```html
-   {% extends "ghibli_converter/base.html" %}
-   {% block content %}
-       <div class="profile-container">
-           <div class="profile-header">
-               <img class="profile-image" src="{{ user.profile.profile_image.url }}">
-               <div class="profile-info">
-                   <h2>{{ user.username }}</h2>
-                   <p>{{ user.email }}</p>
-                   <p>{{ user.profile.bio }}</p>
-               </div>
-           </div>
-           
-           <div class="form-container">
-               <h3>Update Profile</h3>
-               <form method="POST" enctype="multipart/form-data">
-                   {% csrf_token %}
-                   <fieldset>
-                       <legend>Profile Info</legend>
-                       {{ u_form.as_p }}
-                       {{ p_form.as_p }}
-                   </fieldset>
-                   <div>
-                       <button type="submit">Update</button>
-                   </div>
-               </form>
-           </div>
-       </div>
-   {% endblock content %}
-   ```
+```html:image_generator/templates/image_generator/base.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Image Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Existing styles */
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        /* Add styles for auth components */
+        .auth-section {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.9em;
+        }
+        .auth-links a {
+            margin-left: 10px;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .auth-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .auth-form .form-group {
+            margin-bottom: 15px;
+        }
+        .auth-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .auth-form input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .profile-picture {
+            max-width: 150px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        .profile-info {
+            display: flex;
+            margin-bottom: 30px;
+        }
+        .profile-actions {
+            margin: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .button.secondary {
+            background-color: #666;
+        }
+        .visibility {
+            font-size: 0.8em;
+            color: #555;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-section">
+        {% if user.is_authenticated %}
+            Welcome, <a href="{% url 'profile' %}">{{ user.username }}</a> | 
+            <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a> | 
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </div>
 
-6. Create password reset templates:
-   ```
-   touch users/templates/users/password_reset.html
-   touch users/templates/users/password_reset_done.html
-   touch users/templates/users/password_reset_confirm.html
-   touch users/templates/users/password_reset_complete.html
-   ```
+    <div class="header">
+        <h1>AI Image Generator</h1>
+        <p>Create amazing images with artificial intelligence</p>
+    </div>
+    
+    <div class="nav">
+        <a href="{% url 'home' %}">Generate</a>
+        <a href="{% url 'gallery' %}">Gallery</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}">My Profile</a>
+        {% endif %}
+    </div>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
+```
 
-7. Add basic content to each password reset template (example for password_reset.html):
-   ```html
-   {% extends "ghibli_converter/base.html" %}
-   {% block content %}
-       <div class="form-container">
-           <h2>Reset Password</h2>
-           <form method="POST">
-               {% csrf_token %}
-               <fieldset>
-                   <legend>Password Reset</legend>
-                   {{ form.as_p }}
-               </fieldset>
-               <div>
-                   <button type="submit">Request Password Reset</button>
-               </div>
-           </form>
-       </div>
-   {% endblock content %}
-   ```
+### 6. Update Views to Handle Authentication and Profiles
 
-### 9. Update Base Template to Include Authentication Links
+1. Update image_generator/views.py:
 
-1. Update ghibli_converter/templates/ghibli_converter/base.html to include authentication links:
-   ```html
-   <div class="nav">
-       <a href="{% url 'home' %}">Home</a>
-       <a href="{% url 'gallery' %}">Gallery</a>
-       {% if user.is_authenticated %}
-           <a href="{% url 'profile' %}">Profile</a>
-           <a href="{% url 'logout' %}">Logout</a>
-       {% else %}
-           <a href="{% url 'login' %}">Login</a>
-           <a href="{% url 'register' %}">Register</a>
-       {% endif %}
-   </div>
-   ```
+```python:image_generator/views.py
+import os
+import requests
+from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
+from django.core.files.base import ContentFile
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .forms import ImagePromptForm, UserRegistrationForm, UserProfileForm
+from .models import GeneratedImage, UserProfile
+from openai import OpenAI
+from dotenv import load_dotenv
 
-2. Add CSS for user-related elements:
-   ```html
-   <style>
-       /* Existing styles... */
-       
-       .form-container {
-           max-width: 500px;
-           margin: 0 auto;
-           padding: 20px;
-           border: 1px solid #ddd;
-           border-radius: 5px;
-       }
-       
-       .profile-container {
-           max-width: 700px;
-           margin: 0 auto;
-       }
-       
-       .profile-header {
-           display: flex;
-           align-items: center;
-           margin-bottom: 20px;
-       }
-       
-       .profile-image {
-           width: 100px;
-           height: 100px;
-           border-radius: 50%;
-           object-fit: cover;
-           margin-right: 20px;
-       }
-       
-       .profile-info {
-           flex: 1;
-       }
-       
-       .messages {
-           list-style: none;
-           padding: 0;
-           margin: 10px 0;
-       }
-       
-       .messages li {
-           padding: 10px;
-           margin: 5px 0;
-           border-radius: 5px;
-       }
-       
-       .messages .success {
-           background-color: #d4edda;
-           color: #155724;
-       }
-       
-       .messages .error {
-           background-color: #f8d7da;
-           color: #721c24;
-       }
-   </style>
-   ```
+# Load environment variables from .env file
+load_dotenv()
 
-3. Add message display to the base template:
-   ```html
-   <div class="content">
-       {% if messages %}
-           <ul class="messages">
-               {% for message in messages %}
-                   <li class="{{ message.tags }}">{{ message }}</li>
-               {% endfor %}
-           </ul>
-       {% endif %}
-       
-       {% block content %}{% endblock %}
-   </div>
-   ```
+# Initialize the OpenAI client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-### 10. Configure Email for Password Reset (Optional)
+@login_required
+def home(request):
+    if request.method == 'POST':
+        form = ImagePromptForm(request.POST)
+        if form.is_valid():
+            prompt = form.cleaned_data['prompt']
+            is_public = form.cleaned_data['is_public']
+            
+            # Generate image using OpenAI API
+            try:
+                generated_image = generate_image(prompt, request.user, is_public)
+                return redirect('gallery')
+            except Exception as e:
+                return render(request, 'image_generator/error.html', {'error': str(e)})
+    else:
+        form = ImagePromptForm()
+    
+    return render(request, 'image_generator/home.html', {'form': form})
 
-1. For development, add these settings to ai_app/settings.py:
-   ```python
-   # Email settings (for development)
-   EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-   ```
+def generate_image(prompt, user, is_public=True):
+    # Call OpenAI API to generate an image using the new syntax
+    try:
+        response = client.images.generate(
+            model="dall-e-2",  # or "dall-e-3" for the newer model
+            prompt=prompt,
+            n=1,
+            size="512x512"
+        )
+        
+        # Get the image URL from the new response format
+        image_url = response.data[0].url
+        
+        # Download the generated image
+        image_response = requests.get(image_url)
+        
+        # Create a new GeneratedImage instance
+        generated_image = GeneratedImage(prompt=prompt, user=user, is_public=is_public)
+        generated_image.image.save(
+            f"generated_{generated_image.id}.png",
+            ContentFile(image_response.content)
+        )
+        generated_image.save()
+        
+        return generated_image
+    except Exception as e:
+        raise Exception(f"API Error: {str(e)}")
 
-2. For production, configure a real email backend:
-   ```python
-   # Email settings (for production)
-   EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-   EMAIL_HOST = 'smtp.gmail.com'  # Or your email provider
-   EMAIL_PORT = 587
-   EMAIL_USE_TLS = True
-   EMAIL_HOST_USER = 'your-email@gmail.com'
-   EMAIL_HOST_PASSWORD = 'your-app-password'  # Use app password for Gmail
-   ```
+def gallery(request):
+    # If user is authenticated, show public images and user's private images
+    if request.user.is_authenticated:
+        images = GeneratedImage.objects.filter(
+            is_public=True
+        ).order_by('-created_at') | GeneratedImage.objects.filter(
+            user=request.user
+        ).order_by('-created_at')
+    else:
+        # If not authenticated, only show public images
+        images = GeneratedImage.objects.filter(is_public=True).order_by('-created_at')
+    
+    return render(request, 'image_generator/gallery.html', {'images': images})
 
-### 11. Register Models in Admin
+def user_login(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+        
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Login successful!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid username or password.')
+            
+    return render(request, 'image_generator/login.html')
 
-1. Edit users/admin.py:
-   ```python
-   from django.contrib import admin
-   from .models import Profile
+def user_logout(request):
+    logout(request)
+    messages.success(request, 'You have been logged out.')
+    return redirect('home')
 
-   admin.site.register(Profile)
-   ```
+def register(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+        
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Registration successful!')
+            return redirect('home')
+    else:
+        form = UserRegistrationForm()
+        
+    return render(request, 'image_generator/register.html', {'form': form})
 
-### 12. Protect Views That Require Authentication
+@login_required
+def profile(request):
+    # Get or create user profile
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    return render(request, 'image_generator/profile.html')
 
-1. Update ghibli_converter/views.py to require login for certain views:
-   ```python
-   from django.contrib.auth.decorators import login_required
+@login_required
+def edit_profile(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('profile')
+    else:
+        form = UserProfileForm(instance=profile)
+        
+    return render(request, 'image_generator/edit_profile.html', {'form': form})
+```
 
-   # Add @login_required decorator to views that should require authentication
-   @login_required
-   def home(request):
-       # Existing view code...
-   ```
+### 7. Update URLs to Include Authentication Routes
 
-### 13. Restart Gunicorn to Apply Changes
+1. Update image_generator/urls.py:
 
-1. Restart the Gunicorn service:
-   ```
-   sudo systemctl restart gunicorn
-   ```
+```python:image_generator/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('gallery/', views.gallery, name='gallery'),
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
+    path('register/', views.register, name='register'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
+]
+```
+
+### 8. Register Models in Admin
+
+1. Update image_generator/admin.py:
+
+```python:image_generator/admin.py
+from django.contrib import admin
+from .models import GeneratedImage, UserProfile
+
+admin.site.register(GeneratedImage)
+admin.site.register(UserProfile)
+```
+
+### 9. Add Messages Template
+
+1. Update image_generator/templates/image_generator/base.html to style the messages:
+
+```html:image_generator/templates/image_generator/base.html
+<!-- Add this CSS to the style section -->
+<style>
+    /* ... existing styles ... */
+    
+    .messages {
+        margin: 10px 0;
+        padding: 0;
+        list-style: none;
+    }
+    
+    .message {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+    
+    .success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .warning {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+</style>
+```
+
+### 10. Update Settings to Configure Login URLs
+
+1. Add the following to my_project/settings.py:
+
+```python:my_project/settings.py
+# Add these lines to the end of the file
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+```
+
+3. Apply the migrations:
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 12. Test the Authentication System
+
+1. Start the Django development server:
+```
+python manage.py runserver 0.0.0.0:8000
+```
+
+2. Test the registration, login, and profile functionality:
+   - Register a new user
+   - Login with the new user
+   - Generate images
+   - View and edit your profile
+   - Verify that public/private images work correctly
 
 ## Expected Outcome
-A complete user authentication system with registration, login, profile management, and password reset functionality integrated into your Django application.
+
+A complete Django web application with:
+- User registration and login functionality
+- User profile pages with customizable information
+- Image generation capability that associates images with the creating user
+- A gallery that respects image privacy settings (public vs. private)
+- Proper authentication for protected routes
 
 ## Troubleshooting
 
-- **Database migration errors**: Check migration files and database consistency
-- **Template errors**: Verify template paths and inheritance structure
-- **Static/Media file issues**: Ensure proper configuration of static and media file settings
-- **Email configuration problems**: Test email settings with Django's send_test_email command
-- **Permission issues**: Check file permissions for media uploads
-- **Login redirect loops**: Verify LOGIN_REDIRECT_URL and LOGIN_URL settings
+- **Migration Errors**: If you encounter issues with migrations, you might need to reset them or create them from scratch
+- **Login Issues**: Check that your authentication views are correctly configured
+- **Image Visibility Issues**: Verify that your query in the gallery view correctly filters for public vs. private images
+- **Profile Picture Problems**: Ensure media files are properly configured in settings and URLs
 
 ## Notes
 
-- Django's built-in authentication system provides a robust foundation for user management
-- For production, consider adding additional security measures like:
-  - Email verification for new accounts
-  - Two-factor authentication
-  - Rate limiting for login attempts
-  - HTTPS enforcement
-- The user profile model can be extended with additional fields as needed
-- Consider implementing social authentication (Google, Facebook, etc.) using django-allauth for a more complete solution
+- For production environments, consider implementing password reset functionality
+- You can enhance security by implementing email verification for new accounts
+- Consider adding social authentication (Google, Facebook, etc.) for a more seamless experience
+- The current implementation is basic; you might want to add additional features like:
+  - Following other users
+  - Liking/favoriting images
+  - Commenting on images
+  - Settings for default image visibility
+  - User roles (admin, moderator, regular user)
