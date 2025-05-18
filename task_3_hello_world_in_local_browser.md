@@ -33,6 +33,7 @@ Set up a basic web server to display a "Hello World" message accessible via web 
    cd ~/hello-world
    python3 -m http.server 8000
    ```
+   [how do python server works?](https://chatgpt.com/share/68294fc8-83f4-8010-8c86-cdd6299696ad)
 
 ### 3. Configure Firewall to Allow Web Traffic
 1. Allow HTTP traffic through the firewall:

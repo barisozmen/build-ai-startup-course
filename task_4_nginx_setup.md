@@ -34,11 +34,19 @@ A load balancer is a server that distributes incoming application traffic across
    ```
 
 ### 2. Configure Firewall
-1. Allow Nginx HTTP traffic through the firewall:
+1. Allow SSH traffic through the firewall:
+   ```
+   sudo ufw allow 22/tcp
+   ```
+   or
+   ```
+   sudo ufw allow 'OpenSSH'
+   ```
+2. Allow Nginx HTTP traffic through the firewall:
    ```
    sudo ufw allow 'Nginx HTTP'
    ```
-2. Verify firewall status:
+3. Verify firewall status:
    ```
    sudo ufw status
    ```
@@ -99,6 +107,7 @@ A load balancer is a server that distributes incoming application traffic across
    ```
    sudo nginx -t
    ```
+   [how does nginx work?](https://chatgpt.com/share/6829503c-0150-8010-892c-2e57254175a9)
 5. Reload Nginx:
    ```
    sudo systemctl reload nginx
