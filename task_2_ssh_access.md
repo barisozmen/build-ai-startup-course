@@ -41,6 +41,8 @@ If you chose password authentication during Droplet creation:
 3. Enter the password you created when setting up the Droplet
 
 
+Tip: to ease debugging, you can use the `ssh -v` command to see the debug logs. [Here](https://chatgpt.com/share/68297681-9fe0-8010-bc32-9dbfd915fead) is ssh connection steps and how to understand debug logs.
+
 ### 3. Basic Server Exploration
 Once connected, explore the server with these commands:
 1. Check system information: `uname -a`

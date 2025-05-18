@@ -18,6 +18,8 @@ Purchase a domain name from Namecheap and connect it to your DigitalOcean drople
 4. Add the domain to your cart and proceed to checkout
 5. Pay for your domain
 
+[What is namecheap and how does it work?](https://chatgpt.com/share/682978c2-5068-8010-a55c-a7f7057f7148)
+
 ### 2. Connect Domain to DigitalOcean
 
 1. Go to [DigitalOcean](https://digitalocean.com) and log in to your account
@@ -92,37 +94,8 @@ Purchase a domain name from Namecheap and connect it to your DigitalOcean drople
    $ sudo systemctl restart nginx
    ```
 
-### 5. Deploy Your Application
 
-1. Transfer your project files to the droplet:
-   ```
-   $ scp -r ~/path/to/your/project root@your_droplet_ip:/var/www/.
-   ```
-
-2. For Flask applications, create a run.py file:
-   ```python
-   from flaskapp import create_app
-   
-   if __name__ == "__main__":
-       app = create_app()
-       app.run(port=5000, host='localhost')
-   ```
-
-3. Set up PM2 process manager to keep your application running:
-   
-   Create a build_at_remote.sh file with:
-   ```
-   pm2 delete your_app_name
-   pm2 start run.py --name "your_app_name" --interpreter python3
-   pm2 save
-   ```
-   
-   Run the script:
-   ```
-   $ bash build_at_remote.sh
-   ```
-
-### 6. Set Up SSL/HTTPS with Let's Encrypt
+### 5. Set Up SSL/HTTPS with Let's Encrypt
 
 1. Install Certbot:
    ```

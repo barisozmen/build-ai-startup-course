@@ -55,3 +55,8 @@ Other:
 ## Support
 
 If you encounter any issues while following these tasks, refer to the troubleshooting sections in each task file or consult the official documentation for the relevant technologies.
+
+
+## Further Reading
+Django
+- [Django 5 By Example](https://djangobyexample.com/)
