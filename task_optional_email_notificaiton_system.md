@@ -137,7 +137,7 @@ Then create the HTML template for the email notification:
 
 Now, update the view where images are generated to send email notifications:
 
-```python: image_generator/views.py:
+```python:image_generator/views.py:
 def home(request):
     if request.method == 'POST':
         form = ImagePromptForm(request.POST)
