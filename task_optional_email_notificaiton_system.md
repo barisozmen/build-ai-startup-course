@@ -138,25 +138,25 @@ Then create the HTML template for the email notification:
 Now, update the view where images are generated to send email notifications:
 
 ```python: image_generator/views.py:
-   def home(request):
-       if request.method == 'POST':
-           form = ImagePromptForm(request.POST)
-           if form.is_valid():
-               prompt = form.cleaned_data['prompt']
-               
-               # Generate image using OpenAI API
-               try:
-                    generated_image = generate_image(prompt)
+def home(request):
+    if request.method == 'POST':
+        form = ImagePromptForm(request.POST)
+        if form.is_valid():
+            prompt = form.cleaned_data['prompt']
+            
+            # Generate image using OpenAI API
+            try:
+                generated_image = generate_image(prompt)
 
-                    send_image_generation_notification(request.user, generated_image)
+                send_image_generation_notification(request.user, generated_image)
 
-                   return redirect('gallery')
-               except Exception as e:
-                   return render(request, 'image_generator/error.html', {'error': str(e)})
-       else:
-           form = ImagePromptForm()
-       
-       return render(request, 'image_generator/home.html', {'form': form})
+                return redirect('gallery')
+            except Exception as e:
+                return render(request, 'image_generator/error.html', {'error': str(e)})
+    else:
+        form = ImagePromptForm()
+    
+    return render(request, 'image_generator/home.html', {'form': form})
 ```
 
 ## Step 5: Add URL Method to GeneratedImage Model
