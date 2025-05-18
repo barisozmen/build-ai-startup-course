@@ -94,7 +94,7 @@ Set up structured logging for your Django application using Logfire, a modern lo
                'level': 'INFO',
                'propagate': True,
            },
-           'ghibli_converter': {
+           'image_generator': {
                'handlers': ['console', 'logfire'],
                'level': 'INFO',
                'propagate': True,
@@ -164,7 +164,7 @@ Set up structured logging for your Django application using Logfire, a modern lo
 
 ### 6. Add Structured Logging to Your Views
 
-1. Update your views to use structured logging. For example, in `ghibli_converter/views.py`:
+1. Update your views to use structured logging. For example, in `image_generator/views.py`:
    ```python
    import logging
    import logfire
@@ -175,21 +175,22 @@ Set up structured logging for your Django application using Logfire, a modern lo
        logger.info("Home page accessed")
        # Existing view code...
    
-   def convert_to_ghibli(original_image):
+   def generate_image(prompt, user, is_public=True):
        try:
            # Existing conversion code...
            logfire.info(
-               "Image converted to Ghibli style",
-               image_id=original_image.id,
-               image_title=original_image.title,
-               image_size=original_image.image.size,
+               "Image generated",
+               image_id=generated_image.id,
+               prompt=prompt,
+               user_id=user.id if user else None,
+               is_public=is_public,
            )
-           return ghibli_image
+           return generated_image
        except Exception as e:
            logfire.error(
-               "Failed to convert image",
-               image_id=original_image.id,
-               image_title=original_image.title,
+               "Failed to generate image",
+               prompt=prompt,
+               user_id=user.id if user else None,
                error=str(e),
                exception=e,
            )
@@ -198,7 +199,7 @@ Set up structured logging for your Django application using Logfire, a modern lo
 
 ### 7. Add Context to User Authentication Events
 
-1. Update the user authentication views to include structured logging. For example, in `users/views.py`:
+1. Update the user authentication views to include structured logging. For example, in `image_generator/views.py`:
    ```python
    import logging
    import logfire
@@ -232,7 +233,7 @@ Set up structured logging for your Django application using Logfire, a modern lo
 
 ### 8. Track API Calls with Logfire
 
-If you're using external APIs (like the image conversion API), add structured logging:
+If you're using external APIs (like the OpenAI API), add structured logging:
 
 ```python
 def call_external_api(data):
@@ -243,7 +244,7 @@ def call_external_api(data):
         
         logfire.info(
             "External API call",
-            api="DeepAI Style Transfer",
+            api="OpenAI DALL-E",
             status_code=response.status_code,
             duration_ms=round(duration * 1000, 2),
             success=response.status_code == 200,
@@ -253,7 +254,7 @@ def call_external_api(data):
     except Exception as e:
         logfire.error(
             "External API call failed",
-            api="DeepAI Style Transfer",
+            api="OpenAI DALL-E",
             error=str(e),
             exception=e,
         )
@@ -289,7 +290,7 @@ def call_external_api(data):
 2. Use the decorator on performance-critical functions:
    ```python
    @monitor_performance
-   def convert_to_ghibli(original_image):
+   def generate_image(prompt, user, is_public=True):
        # Existing code...
    ```
 
@@ -349,7 +350,7 @@ Your Django application will now send structured logs to Logfire, allowing you t
    except Exception as e:
        logfire.exception(
            "Operation failed",
-           operation="image_conversion",
+           operation="image_generation",
            input_data=input_data,
            # The exception parameter automatically includes the traceback
            exception=e,
@@ -360,7 +361,7 @@ Your Django application will now send structured logs to Logfire, allowing you t
    ```python
    logfire.info(
        "Image processed",
-       image_type="ghibli",
+       image_type="ai_generated",
        processing_time_ms=processing_time,
        image_size_kb=image_size / 1024,
        premium_user=user.is_premium,
