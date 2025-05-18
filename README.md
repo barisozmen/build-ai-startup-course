@@ -33,7 +33,7 @@ Other:
 - [Terminal Commands](https://github.com/barisozmen/build-ai-startup-course/blob/main/terminal_commands.md) used throught the course
 
 
-Note: The completed project code for Tasks 6, 7, and 8 can be found in the task6_result/, task7_result/, and task8_result/ folders respectively.
+Note: The completed project code for Tasks 6, 7, and 8 can be found in the `task6_result/`, `task7_result/`, and `task8_result/` folders respectively.
 
 
 ## Technologies Used
