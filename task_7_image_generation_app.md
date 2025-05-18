@@ -86,6 +86,7 @@ Alternative: You can use [StabilityAI](https://stability.ai/), [DeepAI](https://
    ```
    touch path-to-your-project/.env
    ```
+   [Where should I put the .env file and why?](https://chatgpt.com/share/682963cb-68e4-8010-bc5f-b16c839227ce)
 
 3. Add your OpenAI API key to the .env file:
    ```

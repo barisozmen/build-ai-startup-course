@@ -34,6 +34,7 @@ Set up a basic web server to display a "Hello World" message accessible via web 
    python3 -m http.server 8000
    ```
    [how do python server works?](https://chatgpt.com/share/68294fc8-83f4-8010-8c86-cdd6299696ad)
+   [why do we use port 8000, but not another?](https://chatgpt.com/share/68296424-8f7c-8010-a92e-b672fa6de6b6) - note that you can use any available port you want, but 8000 is a convenience.
 
 ### 3. Configure Firewall to Allow Web Traffic
 1. Allow HTTP traffic through the firewall:
