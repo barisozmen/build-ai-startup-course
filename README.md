@@ -24,10 +24,10 @@ Prior to starting tasks, I recommend going through [these slides](https://docs.g
 
 Optionals:
 - [Custom Domain Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_custom_domain.md) - Purchase a domain name from Namecheap and connect it to your application.
-- [Stripe Payment System](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_stripe_payment_system.md) - Subscription payments for premium features.
-- [Logging with Logfire](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_logging_with_logfire.md) - Set up structured loggings
 - [PM2 Process Manager](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_pm2_linux_process_manager.md) - Linux process manager setup, for keeping the app running robustly
+- [Logging with Logfire](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_logging_with_logfire.md) - Set up structured loggings
 - [Email Notification System](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_email_notificaiton_system.md) - Send email notifications to users when they generate images.
+- [Stripe Payment System](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_stripe_payment_system.md) - Subscription payments for premium features.
 
 Other:
 - [Terminal Commands](https://github.com/barisozmen/build-ai-startup-course/blob/main/terminal_commands.md) used throught the course
