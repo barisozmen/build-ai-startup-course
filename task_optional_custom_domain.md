@@ -14,7 +14,7 @@ Purchase a domain name from Namecheap and connect it to your DigitalOcean drople
 
 1. Visit [Namecheap](https://www.namecheap.com/)
 2. Use the search bar to find an available domain name for your AI application
-3. Select a domain name that is appropriate for your application
+3. Select a domain name that is appropriate for your application (tip: `.xyz` domains are cheaper)
 4. Add the domain to your cart and proceed to checkout
 5. Pay for your domain
 
