@@ -1,0 +1,19 @@
+{% extends 'image_generator/base.html' %}
+   
+{% block content %}
+<h2>Image Gallery</h2>
+
+{% if images %}
+    <div class="gallery">
+        {% for image in images %}
+        <div class="image-card">
+            <img src="{{ image.image.url }}" alt="Generated image">
+            <div class="prompt">"{{ image.prompt }}"</div>
+            <div class="timestamp">{{ image.created_at|date:"F j, Y, g:i a" }}</div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No images have been generated yet. <a href="{% url 'home' %}">Create your first image!</a></p>
+{% endif %}
+{% endblock %}
