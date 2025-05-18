@@ -14,6 +14,8 @@ Set up a basic web server to display a "Hello World" message accessible via web 
 2. Update package lists and upgrade installed packages:
    ```
    sudo apt update
+   ```
+   ```
    sudo apt upgrade -y
    ```
 
@@ -25,12 +27,15 @@ Set up a basic web server to display a "Hello World" message accessible via web 
 2. Create a simple HTML file:
    ```
    mkdir -p ~/hello-world
-   
+   ```
+   ```
    echo "<html><body><h1>Hello, World</h1><p>My app server is working</p></body></html>" > ~/hello-world/index.html
    ```
 3. Start a basic Python web server:
    ```
    cd ~/hello-world
+   ```
+   ```
    python3 -m http.server 8000
    ```
    [how do python server works?](https://chatgpt.com/share/68294fc8-83f4-8010-8c86-cdd6299696ad)
@@ -40,6 +45,8 @@ Set up a basic web server to display a "Hello World" message accessible via web 
 1. Allow HTTP traffic through the firewall:
    ```
    sudo ufw allow 8000
+   ```
+   ```
    sudo ufw enable
    ```
    (Enter 'y' when prompted)
