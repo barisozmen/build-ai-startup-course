@@ -137,43 +137,26 @@ Then create the HTML template for the email notification:
 
 Now, update the view where images are generated to send email notifications:
 
-```python:generator/views.py
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from .forms import ImageGenerationForm
-from .models import GeneratedImage
-from .utils.email_utils import send_image_generation_notification
+```python: image_generator/views.py:
+   def home(request):
+       if request.method == 'POST':
+           form = ImagePromptForm(request.POST)
+           if form.is_valid():
+               prompt = form.cleaned_data['prompt']
+               
+               # Generate image using OpenAI API
+               try:
+                    generated_image = generate_image(prompt)
 
-# ... existing code ...
+                    send_image_generation_notification(request.user, generated_image)
 
-@login_required
-def generate_image(request):
-    if request.method == 'POST':
-        form = ImageGenerationForm(request.POST)
-        if form.is_valid():
-            prompt = form.cleaned_data['prompt']
-            
-            # Create image object
-            image = GeneratedImage(
-                user=request.user,
-                prompt=prompt,
-                # Other fields as needed
-            )
-            
-            # Your existing image generation code
-            # ... generate image with AI ...
-            
-            # Save the image object
-            image.save()
-            
-            # Send email notification
-            send_image_generation_notification(request.user, image)
-            
-            return redirect('view_image', image_id=image.id)
-    else:
-        form = ImageGenerationForm()
-    
-    return render(request, 'generator/generate.html', {'form': form})
+                   return redirect('gallery')
+               except Exception as e:
+                   return render(request, 'image_generator/error.html', {'error': str(e)})
+       else:
+           form = ImagePromptForm()
+       
+       return render(request, 'image_generator/home.html', {'form': form})
 ```
 
 ## Step 5: Add URL Method to GeneratedImage Model
