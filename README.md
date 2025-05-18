@@ -18,7 +18,7 @@ Prior to starting tasks, I recommend going through [these slides](https://docs.g
 4. [Task 4: Nginx Web Server Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_4_nginx_setup.md) - Install and configure Nginx.
 5. [Task 5: Remote Development Environment Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_5_remote_dev_environment_setup.md) - develop code in remote from your laptop.
 6. [Task 6: Django Setup](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_6_django_setup.md) - Install and configure Django to create a web application framework.
-7. [Task 7: Ghibli Style Image Conversion App](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_7_image_generation_app.md) - Build a web application that transforms user images into Studio Ghibli art style.
+7. [Task 7: AI Image Generation and Display App](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_7_image_generation_app.md) - Build a web application that transforms user images into Studio Ghibli art style.
    - [Task 7b: Chat Application with OpenAI API](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_7b_chat_app.md) - Optionally, add a chat application that integrates with OpenAI's API to provide intelligent responses to user queries.
 8. [Task 8: User System and Authentication](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_8_user_system_and_authentication.md) - Set up user registration, login, and profile management.
 
@@ -27,6 +27,7 @@ Optionals:
 - [Stripe Payment System](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_stripe_payment_system.md) - Subscription payments for premium features.
 - [Logging with Logfire](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_logging_with_logfire.md) - Set up structured loggings
 - [PM2 Process Manager](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_pm2_linux_process_manager.md) - Linux process manager setup, for keeping the app running robustly
+- [Email Notification System](https://github.com/barisozmen/build-ai-startup-course/blob/main/task_optional_email_notificaiton_system.md) - Send email notifications to users when they generate images.
 
 Other:
 - [Terminal Commands](https://github.com/barisozmen/build-ai-startup-course/blob/main/terminal_commands.md) used throught the course
