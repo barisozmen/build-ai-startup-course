@@ -11,9 +11,10 @@ Set up a remote development environment to efficiently work on your AI applicati
 
 ## Step 1: Set up your development tooling
 
-#### Option 1: VS Code Remote Development
+#### Option 1: VS Code & Cursor Remote Development (Recommended)
 
-1. Install Visual Studio Code on your local machine from [VS Code website](https://code.visualstudio.com/)
+1. Install Visual Studio Code on your local machine from [VS Code website](https://code.visualstudio.com/) or Cursor IDE from [Cursor website](https://www.cursor.com/)
+
 2. Install the "Remote - SSH" extension:
    - Open VS Code
    - Go to Extensions (Ctrl+Shift+X or Cmd+Shift+X)
