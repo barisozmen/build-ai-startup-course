@@ -130,7 +130,7 @@ Alternative: You can use [StabilityAI](https://stability.ai/), [DeepAI](https://
    from openai import OpenAI
    from dotenv import load_dotenv
 
-   # Load environment variables from .env file
+   # Load environment variables from .env file. It finds the .env file in the root directory of the project.
    load_dotenv()
 
    # Initialize the OpenAI client with API key from environment variable
