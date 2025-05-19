@@ -263,6 +263,8 @@ This document provides solutions for common issues you might encounter. Use this
 - **Solutions**:
   - Check media file paths
   - Verify Nginx is configured to serve media files
+  - Verify media files are not on `/root` directory. They should be a grandchild of `/var/www/` directory.
+      - Files in `/root` directory are not accessible from the web server due to permission issues.
   - Ensure database entries are created correctly
   - Check for file permission issues
 
