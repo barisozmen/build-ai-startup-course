@@ -98,6 +98,7 @@ A load balancer is a server that distributes incoming application traffic across
            try_files $uri $uri/ =404;
        }
    }
+   [nginx configuration file structure](https://chatgpt.com/share/682b24c7-af70-8010-b054-db37758c9ca2)
    ```
 3. Create a symbolic link to enable the site:
    ```
