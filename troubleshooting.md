@@ -275,6 +275,18 @@ This document provides solutions for common issues you might encounter. Use this
   - Implement content filtering on user prompts
   - Add error handling for rejected prompts
 
+
+### CSRF verification failed
+- **Issue**: `Forbidden (403) CSRF verification failed. Request aborted.` error in the browser
+- **Solutions**:
+  - Verify CSRF_TRUSTED_ORIGINS in settings.py
+  - Check if the domain is in CSRF_TRUSTED_ORIGINS
+  - Check if the domain is in ALLOWED_HOSTS
+  - Check if the domain is in CORS_ALLOWED_ORIGINS
+
+
+
+
 ## User Authentication System
 
 ### Registration failures
