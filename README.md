@@ -9,6 +9,10 @@ This repository contains a step-by-step guide to building an AI startup, from se
 
 Prior to starting tasks, I recommend going through [these slides](https://docs.google.com/presentation/d/15o64i37sIBoT4gUDC6-S_pjh0oApq129NZFnmFcEZ68/edit?usp=sharing) that gives a background for choices of tech stack.
 
+This course was first delivered in the form of a one-day workshop at [Network School](https://ns.com/).
+
+<img width="50" height="50" alt="image" src="https://github.com/user-attachments/assets/8dc3199e-aa5c-47d6-b489-5db08f2bb674" />
+
 
 ## Tasks
 
