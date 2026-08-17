@@ -27,7 +27,7 @@ If you chose SSH key authentication during Droplet creation:
    ```
 3. Connect using the key:
    ```
-   ssh -i ~/.ssh/your_private_key root@your_droplet_ip
+   ssh -i ~/.ssh/your_private_key -o ServerAliveInterval=60 root@your_droplet_ip
    ```
 
 #### Second option: Use password authentication
@@ -36,7 +36,7 @@ If you chose password authentication during Droplet creation:
 1. Open your terminal application
 2. Use the SSH command with your Droplet's IP address:
    ```
-   ssh root@your_droplet_ip
+   ssh -o ServerAliveInterval=60 root@your_droplet_ip
    ```
 3. Enter the password you created when setting up the Droplet
 
